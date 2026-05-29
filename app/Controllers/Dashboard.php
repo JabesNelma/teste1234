@@ -26,9 +26,10 @@ class Dashboard extends BaseController
                 ->orderBy('students.created_at', 'DESC')
                 ->limit(5)
                 ->findAll(),
-            'recent_grades' => $gradeModel->select('grades.*, students.full_name as student_name, subjects.subject_name')
+            'recent_grades' => $gradeModel->select('grades.*, students.full_name as student_name, subjects.subject_name, classes.class_name')
                 ->join('students', 'students.id = grades.student_id')
                 ->join('subjects', 'subjects.id = grades.subject_id')
+                ->join('classes', 'classes.id = grades.class_id')
                 ->orderBy('grades.created_at', 'DESC')
                 ->limit(5)
                 ->findAll(),

@@ -3,19 +3,19 @@
 <?= $this->section('content') ?>
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-book me-2"></i>Subject List</span>
+        <span><i class="bi bi-book me-2"></i>Lista Materia</span>
         <a href="<?= site_url('subjects/create') ?>" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i>Add Subject
+            <i class="bi bi-plus-lg me-1"></i>Aumenta Materia
         </a>
     </div>
     <div class="card-body">
         <form method="GET" class="row g-2 mb-3">
             <div class="col-md-4">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control form-control-sm" placeholder="Search by name or code..." value="<?= esc($search ?? '') ?>">
+                    <input type="text" name="search" class="form-control form-control-sm" placeholder="Buka uza Naran/Kode..." value="<?= esc($search ?? '') ?>">
                     <button class="btn btn-outline-primary btn-sm" type="submit"><i class="bi bi-search"></i></button>
                     <?php if ($search): ?>
-                    <a href="<?= site_url('subjects') ?>" class="btn btn-outline-secondary btn-sm">Clear</a>
+                    <a href="<?= site_url('subjects') ?>" class="btn btn-outline-secondary btn-sm">Hamos</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -25,10 +25,10 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Subject Code</th>
-                        <th>Subject Name</th>
-                        <th>Description</th>
-                        <th>Actions</th>
+                        <th>Kode Materia</th>
+                        <th>Naran Materia</th>
+                        <th>Deskrisaun</th>
+                        <th>Aksaun</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,14 +39,12 @@
                     <tr>
                         <td><strong><?= esc($subject['subject_code']) ?></strong></td>
                         <td>
-                            <a href="<?= site_url('subjects/view/') ?><?= $subject['id'] ?>"><?= esc($subject['subject_name']) ?></a>
+                            <p href="<?= site_url('subjects/view/') ?><?= $subject['id'] ?>"><?= esc($subject['subject_name']) ?></p>
                         </td>
                         <td><?= esc($subject['description'] ?? '-') ?></td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="<?= site_url('subjects/view/') ?><?= $subject['id'] ?>" class="btn btn-outline-info" title="View">
-                                    <i class="bi bi-eye"></i>
-                                </a>
+                                
                                 <a href="<?= site_url('subjects/edit/') ?><?= $subject['id'] ?>" class="btn btn-outline-warning" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>

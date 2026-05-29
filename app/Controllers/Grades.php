@@ -29,8 +29,8 @@ class Grades extends BaseController
         $year = $this->request->getGet('year');
 
         $grades = [];
-        if ($classId && $term && $year) {
-            $grades = $this->gradeModel->getGradesByClassAndTerm($classId, $term, $year);
+        if ($classId && $classId !== '0' && $term && $year) {
+            $grades = $this->gradeModel->getGradesByClassAndTerm((int) $classId, $term, $year);
         }
 
         $data = [
@@ -75,7 +75,7 @@ class Grades extends BaseController
             'class_id' => 'required|integer',
             'academic_term' => 'required|in_list[Term 1,Term 2,Term 3]',
             'academic_year' => 'required|max_length[20]',
-            'score' => 'required|numeric|greater_than_equal_to[0]|less_than_equal_to[100]',
+            'score' => 'required|numeric|greater_than_equal_to[0]|less_than_equal_to[10]',
         ]);
 
         if (!$validation) {
@@ -93,23 +93,31 @@ class Grades extends BaseController
 
         $score = (float) $this->request->getPost('score');
 
-        try {
-            $this->gradeModel->save([
-                'student_id' => $studentId,
-                'subject_id' => $subjectId,
-                'class_id' => (int) $this->request->getPost('class_id'),
-                'academic_term' => $term,
-                'academic_year' => $year,
-                'score' => $score,
-                'grade_letter' => $this->gradeModel->scoreToLetter($score),
-                'remarks' => $this->gradeModel->scoreToRemarks($score),
-                'entered_by' => session()->get('user_id'),
-            ]);
-        } catch (\Exception $e) {
+        $data = [
+            'student_id' => $studentId,
+            'subject_id' => $subjectId,
+            'class_id' => (int) $this->request->getPost('class_id'),
+            'academic_term' => $term,
+            'academic_year' => $year,
+            'score' => $score,
+            'grade_letter' => $this->gradeModel->scoreToLetter($score),
+            'remarks' => $this->gradeModel->scoreToRemarks($score),
+            'entered_by' => session()->get('user_id'),
+        ];
+
+        $saved = $this->gradeModel->save($data);
+
+        if (!$saved) {
+            return redirect()->back()->withInput()->with('errors', $this->gradeModel->errors());
+        }
+
+        $gradeId = $this->gradeModel->getInsertID();
+        $stored = $this->gradeModel->find($gradeId);
+        if (!$stored || (float) $stored['score'] !== $score) {
             return redirect()->back()->withInput()->with('error', 'Failed to save grade. Please try again.');
         }
 
-        return redirect()->to('/grades')->with('success', 'Grade added successfully.');
+        return redirect()->to('/grades?class_id=' . $data['class_id'] . '&term=' . urlencode($term) . '&year=' . urlencode($year))->with('success', 'Grade added successfully.');
     }
 
     public function edit($id)
@@ -143,7 +151,7 @@ class Grades extends BaseController
             'class_id' => 'required|integer',
             'academic_term' => 'required|in_list[Term 1,Term 2,Term 3]',
             'academic_year' => 'required|max_length[20]',
-            'score' => 'required|numeric|greater_than_equal_to[0]|less_than_equal_to[100]',
+            'score' => 'required|numeric|greater_than_equal_to[0]|less_than_equal_to[10]',
         ]);
 
         if (!$validation) {
@@ -161,22 +169,29 @@ class Grades extends BaseController
 
         $score = (float) $this->request->getPost('score');
 
-        try {
-            $this->gradeModel->update($id, [
-                'student_id' => $studentId,
-                'subject_id' => $subjectId,
-                'class_id' => (int) $this->request->getPost('class_id'),
-                'academic_term' => $term,
-                'academic_year' => $year,
-                'score' => $score,
-                'grade_letter' => $this->gradeModel->scoreToLetter($score),
-                'remarks' => $this->gradeModel->scoreToRemarks($score),
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', 'Failed to update grade. Please try again.');
+        $data = [
+            'student_id' => $studentId,
+            'subject_id' => $subjectId,
+            'class_id' => (int) $this->request->getPost('class_id'),
+            'academic_term' => $term,
+            'academic_year' => $year,
+            'score' => $score,
+            'grade_letter' => $this->gradeModel->scoreToLetter($score),
+            'remarks' => $this->gradeModel->scoreToRemarks($score),
+        ];
+
+        $updated = $this->gradeModel->update($id, $data);
+
+        if (!$updated) {
+            return redirect()->back()->withInput()->with('errors', $this->gradeModel->errors());
         }
 
-        return redirect()->to('/grades')->with('success', 'Grade updated successfully.');
+        $saved = $this->gradeModel->find($id);
+        if (!$saved || (float) $saved['score'] !== $score) {
+            return redirect()->back()->withInput()->with('error', 'Failed to save grade. Please try again.');
+        }
+
+        return redirect()->to('/grades?class_id=' . $data['class_id'] . '&term=' . urlencode($term) . '&year=' . urlencode($year))->with('success', 'Grade updated successfully.');
     }
 
     public function delete($id)

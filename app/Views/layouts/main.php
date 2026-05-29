@@ -143,8 +143,8 @@
 <body>
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h5>VGSS Grading System</h5>
-            <small>Venilale General Secondary School</small>
+            <h5>Sistema ESGV</h5>
+            <small>Escola Secundaria Geral Venilale</small>
         </div>
         <ul class="nav flex-column mt-3">
             <li class="nav-item">
@@ -154,27 +154,27 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= str_starts_with(uri_string(), 'students') ? 'active' : '' ?>" href="<?= site_url('students') ?>">
-                    <i class="bi bi-people"></i> Students
+                    <i class="bi bi-people"></i> Estudantes
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= str_starts_with(uri_string(), 'subjects') ? 'active' : '' ?>" href="<?= site_url('subjects') ?>">
-                    <i class="bi bi-book"></i> Subjects
+                    <i class="bi bi-book"></i> Materia
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= str_starts_with(uri_string(), 'classes') ? 'active' : '' ?>" href="<?= site_url('classes') ?>">
-                    <i class="bi bi-building"></i> Classes
+                    <i class="bi bi-building"></i> Klasse
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= str_starts_with(uri_string(), 'grades') ? 'active' : '' ?>" href="<?= site_url('grades') ?>">
-                    <i class="bi bi-journal-text"></i> Grades
+                    <i class="bi bi-journal-text"></i> Valor
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= str_starts_with(uri_string(), 'reports') ? 'active' : '' ?>" href="<?= site_url('reports') ?>">
-                    <i class="bi bi-file-earmark-bar-graph"></i> Reports
+                    <i class="bi bi-file-earmark-bar-graph"></i> Relatoriu
                 </a>
             </li>
             <li class="nav-item mt-5">

@@ -50,7 +50,7 @@ class Students extends BaseController
         $validation = $this->validate([
             'student_id' => 'required|is_unique[students.student_id]',
             'full_name' => 'required|min_length[3]|max_length[100]',
-            'gender' => 'required|in_list[male,female]',
+            'gender' => 'required|in_list[mane,feto]',
             'date_of_birth' => 'required|valid_date',
             'class_id' => 'required|integer',
             'enrollment_date' => 'required|valid_date',
@@ -61,10 +61,12 @@ class Students extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $this->studentModel->save([
+        $gender = $this->request->getPost('gender') === 'mane' ? 'male' : 'female';
+
+        $data = [
             'student_id' => $this->request->getPost('student_id'),
             'full_name' => $this->request->getPost('full_name'),
-            'gender' => $this->request->getPost('gender'),
+            'gender' => $gender,
             'date_of_birth' => $this->request->getPost('date_of_birth'),
             'class_id' => $this->request->getPost('class_id'),
             'parent_name' => $this->request->getPost('parent_name'),
@@ -72,7 +74,11 @@ class Students extends BaseController
             'address' => $this->request->getPost('address'),
             'enrollment_date' => $this->request->getPost('enrollment_date'),
             'status' => $this->request->getPost('status'),
-        ]);
+        ];
+
+        if (!$this->studentModel->save($data)) {
+            return redirect()->back()->withInput()->with('errors', $this->studentModel->errors());
+        }
 
         return redirect()->to('/students')->with('success', 'Student added successfully.');
     }
@@ -85,6 +91,8 @@ class Students extends BaseController
             return redirect()->to('/students')->with('error', 'Student not found.');
         }
 
+        $student['gender'] = $student['gender'] === 'male' ? 'mane' : 'feto';
+
         $data = [
             'title' => 'Edit Student',
             'student' => $student,
@@ -96,10 +104,14 @@ class Students extends BaseController
 
     public function update($id)
     {
+        if (!$this->studentModel->find($id)) {
+            return redirect()->to('/students')->with('error', 'Student not found.');
+        }
+
         $validation = $this->validate([
             'student_id' => 'required|is_unique[students.student_id,id,' . $id . ']',
             'full_name' => 'required|min_length[3]|max_length[100]',
-            'gender' => 'required|in_list[male,female]',
+            'gender' => 'required|in_list[mane,feto]',
             'date_of_birth' => 'required|valid_date',
             'class_id' => 'required|integer',
             'enrollment_date' => 'required|valid_date',
@@ -110,10 +122,12 @@ class Students extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $this->studentModel->update($id, [
+        $gender = $this->request->getPost('gender') === 'mane' ? 'male' : 'female';
+
+        $data = [
             'student_id' => $this->request->getPost('student_id'),
             'full_name' => $this->request->getPost('full_name'),
-            'gender' => $this->request->getPost('gender'),
+            'gender' => $gender,
             'date_of_birth' => $this->request->getPost('date_of_birth'),
             'class_id' => $this->request->getPost('class_id'),
             'parent_name' => $this->request->getPost('parent_name'),
@@ -121,14 +135,27 @@ class Students extends BaseController
             'address' => $this->request->getPost('address'),
             'enrollment_date' => $this->request->getPost('enrollment_date'),
             'status' => $this->request->getPost('status'),
-        ]);
+        ];
+
+        if (!$this->studentModel->update($id, $data)) {
+            return redirect()->back()->withInput()->with('errors', $this->studentModel->errors());
+        }
 
         return redirect()->to('/students')->with('success', 'Student updated successfully.');
     }
 
     public function delete($id)
     {
-        $this->studentModel->delete($id);
+        if (!$this->studentModel->find($id)) {
+            return redirect()->to('/students')->with('error', 'Student not found.');
+        }
+
+        try {
+            $this->studentModel->delete($id);
+        } catch (\Exception $e) {
+            return redirect()->to('/students')->with('error', 'Cannot delete student. They may have grade records.');
+        }
+
         return redirect()->to('/students')->with('success', 'Student deleted successfully.');
     }
 

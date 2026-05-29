@@ -49,12 +49,16 @@ class Classes extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $this->classModel->save([
+        $data = [
             'class_name' => $this->request->getPost('class_name'),
             'class_code' => $this->request->getPost('class_code'),
             'academic_year' => $this->request->getPost('academic_year'),
             'section' => $this->request->getPost('section'),
-        ]);
+        ];
+
+        if (!$this->classModel->save($data)) {
+            return redirect()->back()->withInput()->with('errors', $this->classModel->errors());
+        }
 
         return redirect()->to('/classes')->with('success', 'Class added successfully.');
     }
@@ -72,6 +76,10 @@ class Classes extends BaseController
 
     public function update($id)
     {
+        if (!$this->classModel->find($id)) {
+            return redirect()->to('/classes')->with('error', 'Class not found.');
+        }
+
         $validation = $this->validate([
             'class_name' => 'required|min_length[3]|max_length[50]',
             'class_code' => 'required|is_unique[classes.class_code,id,' . $id . ']',
@@ -82,12 +90,16 @@ class Classes extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $this->classModel->update($id, [
+        $data = [
             'class_name' => $this->request->getPost('class_name'),
             'class_code' => $this->request->getPost('class_code'),
             'academic_year' => $this->request->getPost('academic_year'),
             'section' => $this->request->getPost('section'),
-        ]);
+        ];
+
+        if (!$this->classModel->update($id, $data)) {
+            return redirect()->back()->withInput()->with('errors', $this->classModel->errors());
+        }
 
         return redirect()->to('/classes')->with('success', 'Class updated successfully.');
     }

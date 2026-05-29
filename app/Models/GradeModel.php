@@ -22,7 +22,7 @@ class GradeModel extends Model
         'class_id' => 'required|integer',
         'academic_term' => 'required|in_list[Term 1,Term 2,Term 3]',
         'academic_year' => 'required|max_length[20]',
-        'score' => 'required|numeric|greater_than_equal_to[0]|less_than_equal_to[100]',
+        'score' => 'required|numeric|greater_than_equal_to[0]|less_than_equal_to[10]',
     ];
 
     protected $skipValidation = false;
@@ -43,9 +43,10 @@ class GradeModel extends Model
 
     public function getGradesByClassAndTerm(int $classId, string $term, string $year)
     {
-        return $this->select('grades.*, students.full_name as student_name, students.student_id as student_code, subjects.subject_name')
+        return $this->select('grades.*, students.full_name as student_name, students.student_id as student_code, subjects.subject_name, classes.class_name')
             ->join('students', 'students.id = grades.student_id')
             ->join('subjects', 'subjects.id = grades.subject_id')
+            ->join('classes', 'classes.id = grades.class_id')
             ->where('grades.class_id', $classId)
             ->where('grades.academic_term', $term)
             ->where('grades.academic_year', $year)
@@ -96,17 +97,17 @@ class GradeModel extends Model
 
     public function scoreToLetter(float $score): string
     {
-        if ($score >= 90) return 'A+';
-        if ($score >= 85) return 'A';
-        if ($score >= 80) return 'A-';
-        if ($score >= 75) return 'B+';
-        if ($score >= 70) return 'B';
-        if ($score >= 65) return 'B-';
-        if ($score >= 60) return 'C+';
-        if ($score >= 55) return 'C';
-        if ($score >= 50) return 'C-';
-        if ($score >= 45) return 'D+';
-        if ($score >= 40) return 'D';
+        if ($score >= 9.0) return 'A+';
+        if ($score >= 8.5) return 'A';
+        if ($score >= 8.0) return 'A-';
+        if ($score >= 7.5) return 'B+';
+        if ($score >= 7.0) return 'B';
+        if ($score >= 6.5) return 'B-';
+        if ($score >= 6.0) return 'C+';
+        if ($score >= 5.5) return 'C';
+        if ($score >= 5.0) return 'C-';
+        if ($score >= 4.5) return 'D+';
+        if ($score >= 4.0) return 'D';
         return 'F';
     }
 
@@ -124,12 +125,12 @@ class GradeModel extends Model
 
     public function scoreToRemarks(float $score): string
     {
-        if ($score >= 90) return 'Excellent';
-        if ($score >= 80) return 'Very Good';
-        if ($score >= 70) return 'Good';
-        if ($score >= 60) return 'Satisfactory';
-        if ($score >= 50) return 'Fair';
-        if ($score >= 40) return 'Pass';
+        if ($score >= 9.0) return 'Excellent';
+        if ($score >= 8.0) return 'Very Good';
+        if ($score >= 7.0) return 'Good';
+        if ($score >= 6.0) return 'Satisfactory';
+        if ($score >= 5.0) return 'Fair';
+        if ($score >= 4.0) return 'Pass';
         return 'Fail';
     }
 
@@ -144,7 +145,7 @@ class GradeModel extends Model
             $builder->where('id !=', $excludeId);
         }
 
-        return (bool) $builder->countAllResults(false);
+        return (bool) $builder->countAllResults(true);
     }
 
     public function getTermAverages(int $classId, string $term, string $year)

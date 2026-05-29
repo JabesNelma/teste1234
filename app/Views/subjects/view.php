@@ -5,20 +5,20 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <i class="bi bi-book me-2"></i>Subject Information
+                <i class="bi bi-book me-2"></i>Informasaun Materia
             </div>
             <div class="card-body">
                 <table class="table table-sm">
-                    <tr><th width="40%">Subject Code</th><td><?= esc($subject['subject_code']) ?></td></tr>
-                    <tr><th>Subject Name</th><td><?= esc($subject['subject_name']) ?></td></tr>
+                    <tr><th width="40%">Kode Materia</th><td><?= esc($subject['subject_code']) ?></td></tr>
+                    <tr><th>Naran Materia</th><td><?= esc($subject['subject_name']) ?></td></tr>
                 </table>
                 <div class="mb-3">
-                    <strong>Description:</strong><br>
+                    <strong>Deskrisaun:</strong><br>
                     <p class="text-muted small"><?= esc($subject['description'] ?: 'No description available.') ?></p>
                 </div>
                 <div class="d-flex gap-2 mt-3">
                     <a href="<?= site_url('subjects/edit/') ?><?= $subject['id'] ?>" class="btn btn-warning btn-sm flex-grow-1"><i class="bi bi-pencil me-1"></i>Edit</a>
-                    <a href="<?= site_url('subjects') ?>" class="btn btn-secondary btn-sm flex-grow-1"><i class="bi bi-arrow-left me-1"></i>Back</a>
+                    <a href="<?= site_url('subjects') ?>" class="btn btn-secondary btn-sm flex-grow-1"><i class="bi bi-arrow-left me-1"></i>Fila</a>
                 </div>
             </div>
         </div>
@@ -37,11 +37,11 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Student ID</th>
-                                <th>Student Name</th>
-                                <th>Term/Year</th>
-                                <th>Score</th>
-                                <th>Grade</th>
+                                <th>Nu.Emis</th>
+                                <th>Naran Estudante</th>
+                                <th>Periodu/Tinan</th>
+                                <th>Total Valor</th>
+                                <th>Valor Medio</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -50,20 +50,14 @@
                                 <td><small><?= esc($grade['student_code']) ?></small></td>
                                 <td><?= esc($grade['student_name']) ?></td>
                                 <td><small><?= esc($grade['academic_term']) ?> / <?= esc($grade['academic_year']) ?></small></td>
-                                <td><?= number_format($grade['score'], 1) ?></td>
-                                <td>
-                                    <?php
-                                    $letter = strtoupper($grade['grade_letter'] ?? '');
-                                    $class = match (true) {
-                                        str_starts_with($letter, 'A') => 'grade-a',
-                                        str_starts_with($letter, 'B') => 'grade-b',
-                                        str_starts_with($letter, 'C') => 'grade-c',
-                                        str_starts_with($letter, 'D') => 'grade-d',
-                                        default => 'grade-f',
-                                    };
-                                    ?>
-                                    <span class="badge-grade <?= $class ?>"><?= $letter ?></span>
-                                </td>
+                                                                <td class="fw-bold"><?= number_format($grade['score'], 1) ?></td>
+                                                                <td>
+                                                                    <?php if ($grade['score'] >= 5): ?>
+                                                                        <span class="badge bg-success">Aprovado</span>
+                                                                    <?php else: ?>
+                                                                        <span class="badge bg-danger">Reprovado</span>
+                                                                    <?php endif; ?>
+                                                                </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>

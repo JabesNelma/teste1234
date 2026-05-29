@@ -4,7 +4,7 @@
 <nav aria-label="breadcrumb" class="mb-3">
     <ol class="breadcrumb bg-transparent p-0 mb-0">
         <li class="breadcrumb-item"><a href="<?= site_url('dashboard') ?>" class="text-decoration-none"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
-        <li class="breadcrumb-item"><a href="<?= site_url('students') ?>" class="text-decoration-none"><i class="bi bi-people me-1"></i>Students</a></li>
+        <li class="breadcrumb-item"><a href="<?= site_url('students') ?>" class="text-decoration-none"><i class="bi bi-people me-1"></i>Estudante</a></li>
         <li class="breadcrumb-item active fw-semibold"><?= esc($student['full_name']) ?></li>
     </ol>
 </nav>
@@ -42,15 +42,15 @@
                 <hr>
                 <div class="text-start small">
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted"><i class="bi bi-building me-1"></i>Class</span>
+                        <span class="text-muted"><i class="bi bi-building me-1"></i>Klasse</span>
                         <span class="fw-medium"><?= esc($student['class_name']) ?></span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted"><i class="bi bi-gender-<?= $student['gender'] === 'male' ? 'male' : 'female' ?> me-1"></i>Gender</span>
-                        <span class="fw-medium"><?= ucfirst($student['gender']) ?></span>
+                        <span class="text-muted"><i class="bi bi-gender-<?= $student['gender'] === 'male' ? 'male' : 'female' ?> me-1"></i>Sexu</span>
+                        <span class="fw-medium"><?= $student['gender'] === 'male' ? 'Mane' : 'Feto' ?></span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted"><i class="bi bi-calendar me-1"></i>Date of Birth</span>
+                        <span class="text-muted"><i class="bi bi-calendar me-1"></i>Data Moris</span>
                         <span class="fw-medium"><?= date('d M Y', strtotime($student['date_of_birth'])) ?></span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
@@ -62,14 +62,14 @@
             <div class="card-footer bg-white border-0 p-3 pt-0">
                 <div class="d-grid gap-2">
                     <a href="<?= site_url('students/edit/') ?><?= $student['id'] ?>" class="btn btn-warning"><i class="bi bi-pencil me-1"></i>Edit Profile</a>
-                    <a href="<?= site_url('reports/student') ?>?student_id=<?= $student['id'] ?>" class="btn btn-info text-white"><i class="bi bi-printer me-1"></i>Generate Report</a>
+                    <a href="<?= site_url('reports/student') ?>?student_id=<?= $student['id'] ?>" class="btn btn-info text-white"><i class="bi bi-printer me-1"></i>Relatoriu Kaderneta</a>
                 </div>
             </div>
         </div>
 
         <div class="card border-0 shadow-sm mt-4">
             <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
-                <h6 class="fw-bold mb-0"><i class="bi bi-info-circle me-2"></i>Contact Information</h6>
+                <h6 class="fw-bold mb-0"><i class="bi bi-info-circle me-2"></i>Kontaktu Informasaun</h6>
             </div>
             <div class="card-body pt-3">
                 <div class="small">
@@ -78,7 +78,7 @@
                             <i class="bi bi-person text-primary"></i>
                         </div>
                         <div>
-                            <small class="text-muted d-block">Parent / Guardian</small>
+                            <small class="text-muted d-block">Enkaregadu/Responsabilidade</small>
                             <span class="fw-medium"><?= esc($student['parent_name'] ?? '-') ?></span>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                             <i class="bi bi-telephone text-success"></i>
                         </div>
                         <div>
-                            <small class="text-muted d-block">Phone Number</small>
+                            <small class="text-muted d-block">Numeru Telefone</small>
                             <span class="fw-medium"><?= esc($student['parent_phone'] ?? '-') ?></span>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                             <i class="bi bi-geo-alt text-danger"></i>
                         </div>
                         <div>
-                            <small class="text-muted d-block">Address</small>
+                            <small class="text-muted d-block">Hela Fatin</small>
                             <span class="fw-medium"><?= esc($student['address'] ?? '-') ?></span>
                         </div>
                     </div>
@@ -120,8 +120,8 @@
                 <div class="card border-0 shadow-sm bg-gradient-success text-white h-100">
                     <div class="card-body text-center py-4">
                         <i class="bi bi-graph-up-arrow fs-1 mb-2 d-block"></i>
-                        <h2 class="fw-bold mb-0"><?= number_format($gpa['average'], 1) ?>%</h2>
-                        <small class="opacity-75">Average Score</small>
+                    <h2 class="fw-bold mb-0"><?= number_format($gpa['average'], 1) ?></h2>
+                    <small class="opacity-75">Average Score</small>
                     </div>
                 </div>
             </div>
@@ -174,18 +174,14 @@
                                     <small class="text-muted"><?= esc($grade['subject_code']) ?></small>
                                 </td>
                                 <td><span class="badge bg-light text-dark"><?= esc($grade['academic_term']) ?> <?= esc($grade['academic_year']) ?></span></td>
-                                <td class="fw-medium"><?= number_format($grade['score'], 1) ?></td>
-                                <td>
-                                    <?php
-                                    $letter = strtoupper($grade['grade_letter'] ?? '');
-                                    $class = 'grade-f';
-                                    if (str_starts_with($letter, 'A')) $class = 'grade-a';
-                                    elseif (str_starts_with($letter, 'B')) $class = 'grade-b';
-                                    elseif (str_starts_with($letter, 'C')) $class = 'grade-c';
-                                    elseif (str_starts_with($letter, 'D')) $class = 'grade-d';
-                                    ?>
-                                    <span class="badge-grade <?= $class ?>"><?= $letter ?></span>
-                                </td>
+                                                                <td class="fw-bold"><?= number_format($grade['score'], 1) ?></td>
+                                                                <td>
+                                                                    <?php if ($grade['score'] >= 5): ?>
+                                                                        <span class="badge bg-success">Aprovado</span>
+                                                                    <?php else: ?>
+                                                                        <span class="badge bg-danger">Reprovado</span>
+                                                                    <?php endif; ?>
+                                                                </td>
                                 <td><small class="text-muted"><?= esc($grade['remarks'] ?? '-') ?></small></td>
                                 <td><small class="text-muted"><?= esc($grade['teacher_name'] ?? '-') ?></small></td>
                                 <td class="text-end pe-3">
@@ -218,7 +214,7 @@
                     <table class="table table-sm mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Subject</th>
+                                <th>Materia</th>
                                 <th>Score</th>
                                 <th style="width:40%">Progress</th>
                                 <th class="text-end">Grade</th>
@@ -226,30 +222,22 @@
                         </thead>
                         <tbody>
                             <?php foreach ($grades as $grade):
-                                $letter = strtoupper($grade['grade_letter'] ?? '');
-                                $barColor = 'bg-dark';
-                                if (str_starts_with($letter, 'A')) $barColor = 'bg-success';
-                                elseif (str_starts_with($letter, 'B')) $barColor = 'bg-info';
-                                elseif (str_starts_with($letter, 'C')) $barColor = 'bg-warning';
-                                elseif (str_starts_with($letter, 'D')) $barColor = 'bg-danger';
+                                $barColor = $grade['score'] >= 8 ? 'bg-success' : ($grade['score'] >= 5 ? 'bg-warning' : 'bg-danger');
                             ?>
                             <tr>
                                 <td><span class="fw-medium"><?= esc($grade['subject_name']) ?></span></td>
                                 <td class="fw-bold"><?= number_format($grade['score'], 1) ?></td>
                                 <td>
                                     <div class="progress" style="height:8px">
-                                        <div class="progress-bar <?= $barColor ?>" role="progressbar" style="width:<?= $grade['score'] ?>%" aria-valuenow="<?= $grade['score'] ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar <?= $barColor ?>" role="progressbar" style="width:<?= $grade['score'] * 10 ?>%" aria-valuenow="<?= $grade['score'] ?>" aria-valuemin="0" aria-valuemax="10"></div>
                                     </div>
                                 </td>
                                 <td class="text-end">
-                                    <?php
-                                    $perfClass = 'grade-f';
-                                    if (str_starts_with($letter, 'A')) $perfClass = 'grade-a';
-                                    elseif (str_starts_with($letter, 'B')) $perfClass = 'grade-b';
-                                    elseif (str_starts_with($letter, 'C')) $perfClass = 'grade-c';
-                                    elseif (str_starts_with($letter, 'D')) $perfClass = 'grade-d';
-                                    ?>
-                                    <span class="badge-grade <?= $perfClass ?>"><?= $letter ?></span>
+                                    <?php if ($grade['score'] >= 5): ?>
+                                        <span class="badge bg-success">Aprovado</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-danger">Reprovado</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

@@ -21,6 +21,9 @@ class UserModel extends Model
         'role' => 'required|in_list[admin,teacher]',
     ];
 
+    protected $beforeInsert = ['hashPassword'];
+    protected $beforeUpdate = ['hashPassword'];
+
     public function verifyPassword(string $username, string $password): array|false
     {
         $user = $this->where('username', $username)->first();
@@ -32,8 +35,12 @@ class UserModel extends Model
         return false;
     }
 
-    public function hashPassword(string $password): string
+    protected function hashPassword(array $data): array
     {
-        return password_hash($password, PASSWORD_BCRYPT);
+        if (isset($data['data']['password'])) {
+            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_BCRYPT);
+        }
+
+        return $data;
     }
 }

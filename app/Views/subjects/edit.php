@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 <div class="card">
     <div class="card-header">
-        <i class="bi bi-pencil me-2"></i>Edit Subject
+        <i class="bi bi-pencil me-2"></i>Hadia Materia
     </div>
     <div class="card-body">
         <?php if (session()->getFlashdata('errors')): ?>
@@ -20,21 +20,21 @@
             <?= csrf_field() ?>
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label for="subject_code" class="form-label">Subject Code *</label>
+                    <label for="subject_code" class="form-label">Kode Materia *</label>
                     <input type="text" name="subject_code" id="subject_code" class="form-control" value="<?= old('subject_code', $subject['subject_code']) ?>" required>
                 </div>
                 <div class="col-md-8 mb-3">
-                    <label for="subject_name" class="form-label">Subject Name *</label>
+                    <label for="subject_name" class="form-label">Naran Materia *</label>
                     <input type="text" name="subject_name" id="subject_name" class="form-control" value="<?= old('subject_name', $subject['subject_name']) ?>" required>
                 </div>
             </div>
             <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
+                <label for="description" class="form-label">Deskrisaun</label>
                 <textarea name="description" id="description" class="form-control" rows="3"><?= old('description', $subject['description']) ?></textarea>
             </div>
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Update Subject</button>
-                <a href="<?= site_url('subjects') ?>" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Atualiza Materia</button>
+                <a href="<?= site_url('subjects') ?>" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i>Fila Fali ba Lista Materia</a>
             </div>
         </form>
     </div>

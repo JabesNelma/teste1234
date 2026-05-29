@@ -28,14 +28,14 @@
 </head>
 <body>
     <div class="no-print text-center py-3 bg-light">
-        <a href="<?= site_url('reports') ?>" class="btn btn-secondary">Back to Reports</a>
+        <a href="<?= site_url('reports') ?>" class="btn btn-secondary">Fila Fali ba Kaderneta</a>
         <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer"></i> Print</button>
     </div>
 
     <div class="report-card">
         <div class="school-header">
-            <h2>VENILALE GENERAL SECONDARY SCHOOL</h2>
-            <h5>Class Academic Summary Report</h5>
+            <h2>ESKOLA SECUNDARIA GERAL VENILALE</h2>
+            <h5>Relatoriu Kaderneta Turma Nian</h5>
             <p class="mb-0 text-muted"><?= esc($class['class_name']) ?> | <?= esc($term) ?> | <?= esc($year) ?></p>
         </div>
 
@@ -45,11 +45,11 @@
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>Rank</th>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Average Score</th>
-                    <th>Grade</th>
+                    <th>No</th>
+                    <th>Nu.Emis</th>
+                    <th>Naran Estudante</th>
+                    <th>Total Valor</th>
+                    <th>Klasifikasaun</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,42 +58,24 @@
                     <td><?= $rank++ ?></td>
                     <td><?= esc($avg['student_code']) ?></td>
                     <td><?= esc($avg['full_name']) ?></td>
-                    <td><?= number_format($avg['average'], 2) ?>%</td>
+                    <td><?= number_format($avg['average'], 1) ?></td>
                     <td>
-                        <?php
-                        $letter = match(true) {
-                            $avg['average'] >= 90 => 'A+',
-                            $avg['average'] >= 85 => 'A',
-                            $avg['average'] >= 80 => 'A-',
-                            $avg['average'] >= 75 => 'B+',
-                            $avg['average'] >= 70 => 'B',
-                            $avg['average'] >= 65 => 'B-',
-                            $avg['average'] >= 60 => 'C+',
-                            $avg['average'] >= 55 => 'C',
-                            $avg['average'] >= 50 => 'C-',
-                            $avg['average'] >= 45 => 'D+',
-                            $avg['average'] >= 40 => 'D',
-                            default => 'F'
-                        };
-                        $badgeClass = str_starts_with($letter, 'A') ? 'bg-success' : (str_starts_with($letter, 'B') ? 'bg-primary' : (str_starts_with($letter, 'C') ? 'bg-warning' : (str_starts_with($letter, 'D') ? 'bg-danger' : 'bg-dark')));
-                        ?>
-                        <span class="badge <?= $badgeClass ?>"><?= $letter ?></span>
+                        <?php if ($avg['average'] >= 5): ?>
+                            <span class="badge bg-success">Aprovado</span>
+                        <?php else: ?>
+                            <span class="badge bg-danger">Reprovado</span>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
 
-        <div class="mt-4 p-3 bg-light rounded">
-            <strong>Class Statistics:</strong><br>
-            Highest Average: <?= number_format(max(array_column($averages, 'average')), 2) ?>%<br>
-            Lowest Average: <?= number_format(min(array_column($averages, 'average')), 2) ?>%<br>
-            Class Average: <?= number_format(array_sum(array_column($averages, 'average')) / count($averages), 2) ?>%
-        </div>
+       
         <?php endif; ?>
 
         <div class="text-center mt-4 text-muted">
-            <small>Generated on <?= date('d M Y H:i') ?> | VGSS Grading System</small>
+            <small>Fo Sai <?= date('d M Y ') ?> | Sistema Eskola Secundaria Geral Venilale</small>
         </div>
     </div>
 </body>

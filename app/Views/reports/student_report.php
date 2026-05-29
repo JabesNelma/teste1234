@@ -38,91 +38,121 @@
 </head>
 <body>
     <div class="no-print text-center py-3 bg-light">
-        <a href="<?= site_url('reports') ?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to Reports</a>
-        <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer"></i> Print Report</button>
+        <a href="<?= site_url('reports') ?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Fila Fali ba Relatoriu Kaderneta</a>
+        <button onclick="window.print()" class="btn btn-primary"><i class="bi bi-printer"></i> Print Kaderneta</button>
     </div>
 
     <div class="report-card">
         <div class="school-header">
-            <h2>VENILALE GENERAL SECONDARY SCHOOL</h2>
-            <h5>Student Academic Report Card</h5>
-            <p class="mb-0 text-muted">Academic Year <?= !empty($grades) ? esc($grades[0]['academic_year']) : '2025-2026' ?></p>
+            <h2>ESKOLA SECUNDARIA GERAL VENILALE</h2>
+            <h5>Kaderneta Periodu Estudante</h5>
+            <p class="mb-0 text-muted">Anu Letivu <?= !empty($grades) ? esc($grades[0]['academic_year']) : '2025-2026' ?></p>
         </div>
 
         <div class="row mb-4">
             <div class="col-6">
                 <table class="table table-sm info-table">
-                    <tr><th>Student ID</th><td><?= esc($student['student_id']) ?></td></tr>
-                    <tr><th>Full Name</th><td><?= esc($student['full_name']) ?></td></tr>
-                    <tr><th>Gender</th><td><?= ucfirst($student['gender']) ?></td></tr>
+                    <tr><th>Nu.Emis</th><td><?= esc($student['student_id']) ?></td></tr>
+                    <tr><th>Naran Kompletu</th><td><?= esc($student['full_name']) ?></td></tr>
+                    <tr><th>Sexu</th><td><?= $student['gender'] === 'male' ? 'Mane' : 'Feto' ?></td></tr>
+                    <tr><th>Periodu</th><td><?= !empty($grades) ? esc($grades[0]['academic_term']) : '-' ?></td></tr>
                 </table>
             </div>
             <div class="col-6">
                 <table class="table table-sm info-table">
-                    <tr><th>Class</th><td><?= esc($student['class_name']) ?></td></tr>
-                    <tr><th>Date of Birth</th><td><?= date('d M Y', strtotime($student['date_of_birth'])) ?></td></tr>
-                    <tr><th>Academic Year</th><td><?= !empty($grades) ? esc($grades[0]['academic_year']) : '-' ?></td></tr>
+                    <tr><th>Klasse</th><td><?= esc($student['class_name']) ?></td></tr>
+                    <tr><th>Data Moris</th><td><?= date('d M Y', strtotime($student['date_of_birth'])) ?></td></tr>
+                    <tr><th>Anu Letivu</th><td><?= !empty($grades) ? esc($grades[0]['academic_year']) : '-' ?></td></tr>
+                  
                 </table>
             </div>
         </div>
 
-        <h5 class="mb-3">Academic Performance</h5>
+        <h5 class="mb-3">Nota Aprendizagem</h5>
         <?php if (empty($grades)): ?>
             <p class="text-muted text-center">No grades recorded.</p>
         <?php else: ?>
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
-                    <th>Subject</th>
-                    <th>Term</th>
-                    <th>Score</th>
-                    <th>Grade</th>
-                    <th>Remarks</th>
+                    <th>Materia</th>
+                    <th>Valor</th>
+                    <th>Observasaun</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($grades as $grade): ?>
                 <tr>
                     <td><?= esc($grade['subject_name']) ?></td>
-                    <td><?= esc($grade['academic_term']) ?></td>
+                    
                     <td><?= number_format($grade['score'], 1) ?></td>
+                   
                     <td>
-                        <?php
-                        $letter = strtoupper($grade['grade_letter'] ?? '');
-                        $class = match (true) {
-                            str_starts_with($letter, 'A') => 'grade-a',
-                            str_starts_with($letter, 'B') => 'grade-b',
-                            str_starts_with($letter, 'C') => 'grade-c',
-                            str_starts_with($letter, 'D') => 'grade-d',
-                            default => 'grade-f',
-                        };
-                        ?>
-                        <span class="badge-grade <?= $class ?>"><?= $letter ?></span>
+                        <?php if ($grade['score'] >= 10): ?>
+                             <span class="badge bg-primary">Excelente</span>
+                        <?php elseif ($grade['score'] >= 9): ?>
+                            <span class="badge bg-info text-dark">Muito Bom</span>
+                        <?php elseif ($grade['score'] >= 8): ?>
+                            <span class="badge bg-warning text-dark">Bom</span>
+                        <?php elseif ($grade['score'] >= 7): ?>
+                            <span class="badge bg-warning text-dark">Razoavel</span>
+                        <?php elseif ($grade['score'] >= 6): ?>
+                            <span class="badge bg-warning text-dark">Suficiente</span>
+                        <?php elseif ($grade['score'] >= 5): ?>
+                            <span class="badge bg-warning text-dark">Insuficiente</span>
+                        <?php elseif ($grade['score'] >= 4): ?>
+                            <span class="badge bg-warning text-dark">Mediocre</span>
+                        <?php elseif ($grade['score'] >= 3): ?>
+                            <span class="badge bg-warning text-dark">Mau</span>
+                        <?php elseif ($grade['score'] >= 2): ?>
+                            <span class="badge bg-warning text-dark">Muito Mau</span>
+                        <?php elseif ($grade['score'] >= 1): ?>
+                            <span class="badge bg-warning text-dark">Mau</span>
+                        <?php else: ?>
+                        <?php endif; ?>
                     </td>
-                    <td><?= esc($grade['remarks'] ?? '-') ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
         <?php endif; ?>
 
+        <?php
+        $total_valor=0;
+        foreach ($grades as $grade){
+            $total_valor += $grade['score'];
+        }
+        ?>
+
         <div class="row mt-4">
             <div class="col-4 text-center">
                 <div class="p-3 bg-primary text-white rounded">
-                    <h4 class="mb-0"><?= $gpa['gpa'] ?></h4>
-                    <small>GPA</small>
+                    <h4 class="mb-0"><?= $total_valor ?></h4>
+                    <small>Total Valor</small>
                 </div>
             </div>
+        <?php
+        $total_valor = 0;
+        
+        //soma valor hotu husi materia sira
+        foreach ($grades as $grade) {
+            $total_valor += $grade['score'];
+        }
+
+        //klasifikasaun
+        if ($total_valor >= 85) {
+            $status = "Aprovadu";
+            $bg = "bg-success";
+        }else {
+            $status = "Reprovadu";
+            $bg = "bg-danger";
+            
+        }
+        ?>
             <div class="col-4 text-center">
-                <div class="p-3 bg-success text-white rounded">
-                    <h4 class="mb-0"><?= $gpa['average'] ?>%</h4>
-                    <small>Average Score</small>
-                </div>
-            </div>
-            <div class="col-4 text-center">
-                <div class="p-3 bg-warning text-white rounded">
-                    <h4 class="mb-0"><?= $gpa['total_subjects'] ?></h4>
-                    <small>Total Subjects</small>
+                <div class="p-3 <?= $bg ?> text-white rounded">
+                    <h4 class="mb-0"><?= $status ?></h4>
+                    <small>Klasifikasaun</small>
                 </div>
             </div>
         </div>
@@ -130,20 +160,20 @@
         <div class="row mt-5 pt-5">
             <div class="col-4 text-center">
                 <hr>
-                <p>Class Teacher</p>
+                <p>Professor da Turma</p>
             </div>
             <div class="col-4 text-center">
                 <hr>
-                <p>Principal</p>
+                <p>Diretor Eskola</p>
             </div>
             <div class="col-4 text-center">
                 <hr>
-                <p>Parent/Guardian</p>
+                <p>Enkaregadu/Responsabilidade</p>
             </div>
         </div>
 
         <div class="text-center mt-4 text-muted">
-            <small>Generated on <?= date('d M Y H:i') ?> | VGSS Grading System</small>
+            <small>Fo Sai <?= date('d M Y H:i') ?> | Sistema ESGV</small>
         </div>
     </div>
 </body>

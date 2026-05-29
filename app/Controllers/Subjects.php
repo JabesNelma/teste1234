@@ -48,11 +48,15 @@ class Subjects extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $this->subjectModel->save([
+        $data = [
             'subject_code' => $this->request->getPost('subject_code'),
             'subject_name' => $this->request->getPost('subject_name'),
             'description' => $this->request->getPost('description'),
-        ]);
+        ];
+
+        if (!$this->subjectModel->save($data)) {
+            return redirect()->back()->withInput()->with('errors', $this->subjectModel->errors());
+        }
 
         return redirect()->to('/subjects')->with('success', 'Subject added successfully.');
     }
@@ -70,6 +74,10 @@ class Subjects extends BaseController
 
     public function update($id)
     {
+        if (!$this->subjectModel->find($id)) {
+            return redirect()->to('/subjects')->with('error', 'Subject not found.');
+        }
+
         $validation = $this->validate([
             'subject_code' => 'required|is_unique[subjects.subject_code,id,' . $id . ']',
             'subject_name' => 'required|min_length[3]|max_length[100]',
@@ -79,11 +87,15 @@ class Subjects extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $this->subjectModel->update($id, [
+        $data = [
             'subject_code' => $this->request->getPost('subject_code'),
             'subject_name' => $this->request->getPost('subject_name'),
             'description' => $this->request->getPost('description'),
-        ]);
+        ];
+
+        if (!$this->subjectModel->update($id, $data)) {
+            return redirect()->back()->withInput()->with('errors', $this->subjectModel->errors());
+        }
 
         return redirect()->to('/subjects')->with('success', 'Subject updated successfully.');
     }
