@@ -1,0 +1,56 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    image: vgss_php:latest
+    volumes:
+      - ./:/var/www/html:cached
+    environment:
+      - COMPOSER_ALLOW_SUPERUSER=1
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "8088:80"
+    volumes:
+      - ./:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: vgss_root_pass
+      MYSQL_DATABASE: vgss_grading
+      MYSQL_USER: vgss
+      MYSQL_PASSWORD: vgss_pass
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./vgss_grading.sql:/docker-entrypoint-initdb.d/vgss_grading.sql:ro
+    ports:
+      - "3308:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  prisma:
+    build:
+      context: prisma
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: "mysql://vgss:vgss_pass@db:3306/vgss_grading"
+    volumes:
+      - ./prisma:/workspace
+    command: ["sleep", "infinity"]
+    depends_on:
+      - db
+
+volumes:
+  db_data:

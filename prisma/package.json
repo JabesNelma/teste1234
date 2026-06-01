@@ -1,0 +1,14 @@
+{
+  "name": "vgss-prisma",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "prisma:pull": "prisma db pull",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio --port 5555"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.15.0",
+    "prisma": "^4.15.0"
+  }
+}

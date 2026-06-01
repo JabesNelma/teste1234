@@ -11,6 +11,10 @@ $routes->get('/login', 'Auth::index');
 $routes->post('/login', 'Auth::login');
 $routes->get('/logout', 'Auth::logout');
 
+// Public pages
+$routes->get('/', 'PublicSite::index');
+$routes->get('/nilai', 'PublicSite::grades');
+
 // Protected routes (require authentication)
 $routes->group('', ['filter' => 'auth'], static function ($routes) {
     // Dashboard
@@ -57,9 +61,4 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/reports', 'Reports::index');
     $routes->get('/reports/student', 'Reports::studentReport');
     $routes->get('/reports/class', 'Reports::classReport');
-});
-
-// Default redirect to login
-$routes->get('/', static function () {
-    return redirect()->to('/login');
 });
